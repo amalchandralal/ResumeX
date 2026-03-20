@@ -62,6 +62,8 @@ const ResumeSchema = new mongoose.Schema(
         name: { type: String, required: true },
         type: { type: String },
         description: { type: String },
+        live_link: { type: String, default: "" }, 
+        technologies: { type: String, default: "" },
       },
     ],
 
@@ -78,7 +80,7 @@ const ResumeSchema = new mongoose.Schema(
   {
     timestamps: true,
     minimize: false,
-  }
+  },
 );
 
 const Resume = mongoose.model("Resume", ResumeSchema);

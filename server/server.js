@@ -1,24 +1,26 @@
-import express from "express"; // Import the Express framework for building the server.
-import cors from "cors"; // Middleware for enabling Cross-Origin Resource Sharing.
-// Load environment variables from the .env file into process.env (CRITICAL).
+import express from "express";
+import cors from "cors";
 import "dotenv/config";
-import connectDB from "./configs/db.js"; // Import the MongoDB connection function.
-// Import route handlers for different resource domains.
+import connectDB from "./configs/db.js";
 import userRouter from "./routes/userRoutes.js";
 import resumeRouter from "./routes/resumeRoutes.js";
-//import aiRouter from "./routes/aiRoutes.js";
+import aiRouter from "./routes/aiRoutes.js";
+;
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+// Connect to DB before starting server
 try {
   await connectDB();
 } catch (error) {
-  console.error("Server failed to start due to database connection error.");
+  console.error("Server failed to start due to database connection error:", error);
+  process.exit(1); // ✅ Stop server if DB fails
 }
 
-app.use(express.json());
+// ✅ cors() MUST come before all other middleware
 app.use(cors());
+app.use(express.json());
 
 app.get("/", (req, res) => {
   res.send(`<div>
@@ -28,9 +30,10 @@ app.get("/", (req, res) => {
     </div>`);
 });
 
-//app.use("/api/users", userRouter);
+// ✅ All routes uncommented and active
+app.use("/api/users", userRouter);
 app.use("/api/resumes", resumeRouter);
-//app.use("/api/ai", aiRouter);
+app.use("/api/ai", aiRouter);
 
 app.listen(PORT, () => {
   console.log(`Server is running on Port ${PORT}`);

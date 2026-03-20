@@ -4,16 +4,10 @@ import MinimalTemplate from "./templates/MinimalTemplate";
 import MinimalImageTemplate from "./templates/MinimalImageTemplate";
 import ClassicTemplate from "./templates/ClassicTemplate";
 
-/* ----------------------------------------------------
-   🔥 UNIVERSAL IMAGE FIX
-   This ensures uploaded images (File object OR URL)
-   are ALWAYS displayed in preview + print.
----------------------------------------------------- */
 export const SafeImage = ({ src, className = "" }) => {
   if (!src) return null;
 
-  const finalSrc =
-    typeof src === "string" ? src : URL.createObjectURL(src);
+  const finalSrc = typeof src === "string" ? src : URL.createObjectURL(src);
 
   return (
     <img
@@ -58,44 +52,7 @@ const ResumePreview = ({ data, template, accentColor, classes = "" }) => {
         {renderTemplate()}
       </div>
 
-      {/* PRINT STYLES */}
-      <style jsx>
-        {`
-          @page {
-            size: letter;
-            margin: 0;
-          }
-
-          @media print {
-            html,
-            body {
-              width: 8.5in;
-              height: 11in;
-              overflow: hidden;
-            }
-
-            body * {
-              visibility: hidden;
-            }
-
-            #resume-preview,
-            #resume-preview * {
-              visibility: visible;
-            }
-
-            #resume-preview {
-              position: absolute;
-              left: 0;
-              top: 0;
-              width: 100%;
-              margin: 0;
-              padding: 0;
-              box-shadow: none !important;
-              border: none !important;
-            }
-          }
-        `}
-      </style>
+      
     </div>
   );
 };

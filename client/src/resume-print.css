@@ -1,0 +1,11 @@
+#resume-preview * {
+  --tw-prose-body: #1f2937;
+  color: revert;
+  background-color: revert;
+}
+
+#resume-preview {
+  font-family: Georgia, serif;
+  background: #ffffff !important;
+  color: #1f2937 !important;
+}

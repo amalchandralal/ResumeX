@@ -41,7 +41,7 @@ const ResumeBuilder = () => {
     professional_summary: "",
     experience: [],
     education: [],
-    project: [],
+    projects: [],
     skills: [],
     template: "classic",
     accent_color: "#3b82f6",
@@ -87,7 +87,7 @@ const ResumeBuilder = () => {
       formData.append("resumeId", resumeId);
       formData.append(
         "resumeData",
-        JSON.stringify({ public: !resumeData.public })
+        JSON.stringify({ public: !resumeData.public }),
       );
 
       const { data } = await api.put("/api/resumes/update", formData, {
@@ -109,17 +109,102 @@ const ResumeBuilder = () => {
       navigator
         .share({ url: resumeUrl })
         .catch(() =>
-          toast.error("Share failed. Make sure you're on HTTPS browser.")
+          toast.error("Share failed. Make sure you're on HTTPS browser."),
         );
     } else {
       alert("Sharing not supported on this browser.");
     }
   };
 
-  const downloadResume = () => {
-    window.print();
-  };
+  // const downloadResume = () => {
+  //   window.print();
+  // };
+const downloadResume = async () => {
+  try {
+    toast.loading("Preparing PDF...");
 
+    const { default: html2canvas } = await import("html2canvas-pro");
+    const { default: jsPDF } = await import("jspdf");
+
+    const element = document.getElementById("resume-preview");
+
+    const canvas = await html2canvas(element, {
+      scale: 2,
+      useCORS: true,
+      backgroundColor: "#ffffff",
+      logging: false,
+      allowTaint: true,
+    });
+
+    const pdf = new jsPDF({
+      orientation: "portrait",
+      unit: "mm",
+      format: "a4",
+    });
+
+    const pageWidth = pdf.internal.pageSize.getWidth();   // 210mm
+    const pageHeight = pdf.internal.pageSize.getHeight(); // 297mm
+    const margin = 10; // 10mm on all sides
+
+    const contentWidth = pageWidth - margin * 2;   // 190mm
+    const contentHeight = pageHeight - margin * 2; // 277mm
+
+    // Convert content height from mm to canvas pixels
+    const contentHeightPx = (contentHeight * canvas.width) / contentWidth;
+
+    let remainingHeight = canvas.height;
+    let sourceY = 0;
+    let pageNumber = 0;
+
+    while (remainingHeight > 0) {
+      if (pageNumber > 0) pdf.addPage();
+
+      const sliceHeight = Math.min(contentHeightPx, remainingHeight);
+
+      // ✅ Create a white canvas for this page slice
+      const pageCanvas = document.createElement("canvas");
+      pageCanvas.width = canvas.width;
+      pageCanvas.height = contentHeightPx; // Always full page height
+
+      const ctx = pageCanvas.getContext("2d");
+      // ✅ Fill with white first (bottom margin area)
+      ctx.fillStyle = "#ffffff";
+      ctx.fillRect(0, 0, pageCanvas.width, pageCanvas.height);
+
+      // ✅ Draw the slice
+      ctx.drawImage(
+        canvas,
+        0, sourceY,           // source start
+        canvas.width, sliceHeight, // source size
+        0, 0,                 // dest start
+        canvas.width, sliceHeight  // dest size
+      );
+
+      const pageImgData = pageCanvas.toDataURL("image/png");
+
+      pdf.addImage(
+        pageImgData,
+        "PNG",
+        margin,        // left margin 10mm
+        margin,        // top margin 10mm
+        contentWidth,  // 190mm
+        contentHeight  // 277mm
+      );
+
+      sourceY += sliceHeight;
+      remainingHeight -= sliceHeight;
+      pageNumber++;
+    }
+
+    pdf.save(`${resumeData.title || "resume"}.pdf`);
+    toast.dismiss();
+    toast.success("PDF downloaded! ✅");
+  } catch (error) {
+    toast.dismiss();
+    toast.error("Download failed!");
+    console.error("PDF Error:", error);
+  }
+};
   const saveResume = async () => {
     try {
       let updatedResumeData = structuredClone(resumeData);
@@ -179,7 +264,6 @@ const ResumeBuilder = () => {
             {/* LEFT PANEL */}
             <div className="relative lg:col-span-5 rounded-2xl backdrop-blur-xl bg-white/60 shadow-lg border border-green-200 overflow-hidden">
               <div className="p-6 pt-1">
-
                 {/* Progress bar */}
                 <div className="relative h-1.5 bg-gray-200 rounded-full mb-6">
                   <div
@@ -217,9 +301,7 @@ const ResumeBuilder = () => {
                     {activeSectionIndex !== 0 && (
                       <button
                         onClick={() =>
-                          setActiveSectionIndex((prev) =>
-                            Math.max(prev - 1, 0)
-                          )
+                          setActiveSectionIndex((prev) => Math.max(prev - 1, 0))
                         }
                         className="flex items-center gap-1 px-3 py-2 rounded-lg text-sm text-gray-600 hover:bg-gray-100 transition-all"
                       >
@@ -230,7 +312,7 @@ const ResumeBuilder = () => {
                     <button
                       onClick={() =>
                         setActiveSectionIndex((prev) =>
-                          Math.min(prev + 1, sections.length - 1)
+                          Math.min(prev + 1, sections.length - 1),
                         )
                       }
                       className={`flex items-center gap-1 px-3 py-2 rounded-lg text-sm text-gray-600 hover:bg-gray-100 transition-all ${
@@ -298,12 +380,9 @@ const ResumeBuilder = () => {
 
                   {activeSection.id === "projects" && (
                     <ProjectForm
-                      data={resumeData.project}
+                      data={resumeData.projects}
                       onChange={(data) =>
-                        setResumeData((prev) => ({
-                          ...prev,
-                          project: data,
-                        }))
+                        setResumeData((prev) => ({ ...prev, projects: data }))
                       }
                     />
                   )}
@@ -339,10 +418,8 @@ const ResumeBuilder = () => {
             {/* RIGHT PANEL */}
             <div className="lg:col-span-7 max-lg:mt-6">
               <div className="relative">
-
                 {/* Floating Buttons */}
                 <div className="absolute bottom-3 right-3 flex gap-3">
-
                   {resumeData.public && (
                     <button
                       onClick={handleShare}

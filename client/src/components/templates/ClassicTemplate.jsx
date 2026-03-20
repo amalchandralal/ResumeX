@@ -1,6 +1,6 @@
 import { Mail, Phone, MapPin, Linkedin, Globe } from "lucide-react";
 import React from "react";
-import { SafeImage } from "../ResumePreview"; // 🔥 IMPORTANT
+import { SafeImage } from "../ResumePreview";
 
 const ClassicTemplate = ({ data, accentColor }) => {
   const formatDate = (dateStr) => {
@@ -13,63 +13,59 @@ const ClassicTemplate = ({ data, accentColor }) => {
   };
 
   return (
-    <div className="max-w-4xl mx-auto p-8 bg-white text-gray-800 leading-relaxed">
+    <div style={{ maxWidth: "900px", margin: "0 auto", padding: "32px", backgroundColor: "#ffffff", color: "#1f2937", lineHeight: "1.6", fontFamily: "Georgia, serif" }}>
 
-      {/* HEADER WITH IMAGE */}
-      <header
-        className="text-center mb-8 pb-6 border-b-2"
-        style={{ borderColor: accentColor }}
-      >
-        {/* Profile Image */}
+      {/* HEADER */}
+      <header style={{ textAlign: "center", marginBottom: "32px", paddingBottom: "24px", borderBottom: `2px solid ${accentColor}` }}>
         {data.personal_info?.image && (
-          <div className="flex justify-center mb-4">
+          <div style={{ display: "flex", justifyContent: "center", marginBottom: "16px" }}>
             <SafeImage
               src={data.personal_info?.image}
-              className="w-28 h-28 rounded-full object-cover border-4 shadow-md"
-              style={{ borderColor: accentColor }}
+              className="w-28 h-28 rounded-full object-cover shadow-md"
+              style={{ width: "112px", height: "112px", borderRadius: "50%", objectFit: "cover", border: `4px solid ${accentColor}` }}
             />
           </div>
         )}
 
-        {/* Full Name */}
-        <h1 className="text-3xl font-bold mb-2" style={{ color: accentColor }}>
+        <h1 style={{ fontSize: "28px", fontWeight: "bold", marginBottom: "8px", color: accentColor }}>
           {data.personal_info?.full_name || "Your Name"}
         </h1>
 
-        {/* Contact Row */}
-        <div className="flex flex-wrap justify-center gap-4 text-sm text-gray-600">
+        {data.personal_info?.profession && (
+          <p style={{ fontSize: "16px", color: "#4b5563", marginBottom: "8px" }}>
+            {data.personal_info.profession}
+          </p>
+        )}
+
+        <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "center", gap: "16px", fontSize: "13px", color: "#4b5563" }}>
           {data.personal_info?.email && (
-            <div className="flex items-center gap-1">
-              <Mail className="size-4" />
+            <div style={{ display: "flex", alignItems: "center", gap: "4px" }}>
+              <Mail size={14} />
               <span>{data.personal_info.email}</span>
             </div>
           )}
-
           {data.personal_info?.phone && (
-            <div className="flex items-center gap-1">
-              <Phone className="size-4" />
+            <div style={{ display: "flex", alignItems: "center", gap: "4px" }}>
+              <Phone size={14} />
               <span>{data.personal_info.phone}</span>
             </div>
           )}
-
           {data.personal_info?.location && (
-            <div className="flex items-center gap-1">
-              <MapPin className="size-4" />
+            <div style={{ display: "flex", alignItems: "center", gap: "4px" }}>
+              <MapPin size={14} />
               <span>{data.personal_info.location}</span>
             </div>
           )}
-
           {data.personal_info?.linkedin && (
-            <div className="flex items-center gap-1">
-              <Linkedin className="size-4" />
-              <span className="break-all">{data.personal_info.linkedin}</span>
+            <div style={{ display: "flex", alignItems: "center", gap: "4px" }}>
+              <Linkedin size={14} />
+              <span>{data.personal_info.linkedin}</span>
             </div>
           )}
-
           {data.personal_info?.website && (
-            <div className="flex items-center gap-1">
-              <Globe className="size-4" />
-              <span className="break-all">{data.personal_info.website}</span>
+            <div style={{ display: "flex", alignItems: "center", gap: "4px" }}>
+              <Globe size={14} />
+              <span>{data.personal_info.website}</span>
             </div>
           )}
         </div>
@@ -77,14 +73,11 @@ const ClassicTemplate = ({ data, accentColor }) => {
 
       {/* SUMMARY */}
       {data.professional_summary && (
-        <section className="mb-6">
-          <h2
-            className="text-xl font-semibold mb-3"
-            style={{ color: accentColor }}
-          >
+        <section style={{ marginBottom: "24px" }}>
+          <h2 style={{ fontSize: "18px", fontWeight: "600", marginBottom: "12px", color: accentColor }}>
             PROFESSIONAL SUMMARY
           </h2>
-          <p className="text-gray-700 leading-relaxed">
+          <p style={{ color: "#374151", lineHeight: "1.7" }}>
             {data.professional_summary}
           </p>
         </section>
@@ -92,39 +85,24 @@ const ClassicTemplate = ({ data, accentColor }) => {
 
       {/* EXPERIENCE */}
       {data.experience && data.experience.length > 0 && (
-        <section className="mb-6">
-          <h2
-            className="text-xl font-semibold mb-4"
-            style={{ color: accentColor }}
-          >
+        <section style={{ marginBottom: "24px" }}>
+          <h2 style={{ fontSize: "18px", fontWeight: "600", marginBottom: "16px", color: accentColor }}>
             PROFESSIONAL EXPERIENCE
           </h2>
-
-          <div className="space-y-4">
+          <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
             {data.experience.map((exp, index) => (
-              <div
-                key={index}
-                className="border-l-3 pl-4"
-                style={{ borderColor: accentColor }}
-              >
-                <div className="flex justify-between items-start mb-2">
+              <div key={index} style={{ borderLeft: `3px solid ${accentColor}`, paddingLeft: "16px" }}>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "8px" }}>
                   <div>
-                    <h3 className="font-semibold text-gray-900">
-                      {exp.position}
-                    </h3>
-                    <p className="text-gray-700 font-medium">{exp.company}</p>
+                    <h3 style={{ fontWeight: "600", color: "#111827" }}>{exp.position}</h3>
+                    <p style={{ color: "#374151", fontWeight: "500" }}>{exp.company}</p>
                   </div>
-
-                  <div className="text-right text-sm text-gray-600">
-                    {formatDate(exp.start_date)} –{" "}
-                    {exp.is_current ? "Present" : formatDate(exp.end_date)}
+                  <div style={{ fontSize: "13px", color: "#6b7280", textAlign: "right" }}>
+                    {formatDate(exp.start_date)} – {exp.is_current ? "Present" : formatDate(exp.end_date)}
                   </div>
                 </div>
-
                 {exp.description && (
-                  <div className="text-gray-700 whitespace-pre-line">
-                    {exp.description}
-                  </div>
+                  <p style={{ color: "#374151", whiteSpace: "pre-line" }}>{exp.description}</p>
                 )}
               </div>
             ))}
@@ -133,50 +111,48 @@ const ClassicTemplate = ({ data, accentColor }) => {
       )}
 
       {/* PROJECTS */}
-      {data.project && data.project.length > 0 && (
-        <section className="mb-6">
-          <h2
-            className="text-xl font-semibold mb-4"
-            style={{ color: accentColor }}
-          >
+      {data.projects && data.projects.length > 0 && (
+        <section style={{ marginBottom: "24px" }}>
+          <h2 style={{ fontSize: "18px", fontWeight: "600", marginBottom: "16px", color: accentColor }}>
             PROJECTS
           </h2>
-
-          <ul className="space-y-3">
-            {data.project.map((proj, index) => (
-              <div key={index} className="flex justify-between items-start border-l-3 pl-6">
-                <div>
-                  <li className="font-semibold text-gray-800">{proj.name}</li>
-                  <p className="text-gray-600">{proj.description}</p>
+          <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+            {data.projects.map((proj, index) => (
+              <div key={index} style={{ borderLeft: `3px solid ${accentColor}`, paddingLeft: "16px" }}>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
+                  <h3 style={{ fontWeight: "600", color: "#111827" }}>{proj.name}</h3>
+                  {proj.live_link && (
+                    <a href={proj.live_link} target="_blank" rel="noreferrer" style={{ fontSize: "13px", color: accentColor }}>
+                      View Project ↗
+                    </a>
+                  )}
                 </div>
+                {proj.type && <p style={{ fontSize: "13px", color: "#6b7280" }}>{proj.type}</p>}
+                {proj.technologies && <p style={{ fontSize: "13px", color: "#6b7280", fontStyle: "italic" }}>{proj.technologies}</p>}
+                {proj.description && <p style={{ color: "#374151", marginTop: "4px" }}>{proj.description}</p>}
               </div>
             ))}
-          </ul>
+          </div>
         </section>
       )}
 
       {/* EDUCATION */}
       {data.education && data.education.length > 0 && (
-        <section className="mb-6">
-          <h2
-            className="text-xl font-semibold mb-4"
-            style={{ color: accentColor }}
-          >
+        <section style={{ marginBottom: "24px" }}>
+          <h2 style={{ fontSize: "18px", fontWeight: "600", marginBottom: "16px", color: accentColor }}>
             EDUCATION
           </h2>
-
-          <div className="space-y-3">
+          <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
             {data.education.map((edu, index) => (
-              <div key={index} className="flex justify-between items-start">
+              <div key={index} style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
                 <div>
-                  <h3 className="font-semibold text-gray-900">
+                  <h3 style={{ fontWeight: "600", color: "#111827" }}>
                     {edu.degree} {edu.field && `in ${edu.field}`}
                   </h3>
-                  <p className="text-gray-700">{edu.institution}</p>
-                  {edu.gpa && <p className="text-sm text-gray-600">GPA: {edu.gpa}</p>}
+                  <p style={{ color: "#374151" }}>{edu.institution}</p>
+                  {edu.gpa && <p style={{ fontSize: "13px", color: "#6b7280" }}>GPA: {edu.gpa}</p>}
                 </div>
-
-                <div className="text-sm text-gray-600">
+                <div style={{ fontSize: "13px", color: "#6b7280" }}>
                   {formatDate(edu.graduation_date)}
                 </div>
               </div>
@@ -187,19 +163,13 @@ const ClassicTemplate = ({ data, accentColor }) => {
 
       {/* SKILLS */}
       {data.skills && data.skills.length > 0 && (
-        <section className="mb-6">
-          <h2
-            className="text-xl font-semibold mb-4"
-            style={{ color: accentColor }}
-          >
+        <section style={{ marginBottom: "24px" }}>
+          <h2 style={{ fontSize: "18px", fontWeight: "600", marginBottom: "16px", color: accentColor }}>
             CORE SKILLS
           </h2>
-
-          <div className="flex gap-4 flex-wrap">
+          <div style={{ display: "flex", flexWrap: "wrap", gap: "16px" }}>
             {data.skills.map((skill, index) => (
-              <div key={index} className="text-gray-700">
-                • {skill}
-              </div>
+              <span key={index} style={{ color: "#374151" }}>• {skill}</span>
             ))}
           </div>
         </section>
